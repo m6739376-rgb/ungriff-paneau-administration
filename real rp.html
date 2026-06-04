@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real RP - Ultimate Platform</title>
+
+<style>
+:root {
+    --bg-main: #0a0a0c;
+    --bg-card: #16161a;
+    --accent: #ff3b5c;
+    --accent-glow: rgba(255, 59, 92, 0.4);
+    --text-main: #ffffff;
+    --text-secondary: #a1a1aa;
+    --border: #27272a;
+}
+
+body {
+    margin: 0;
+    font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+/* 📱 BARRE LATÉRALE FIXE */
+.tiktok-sidebar {
+    position: fixed;
+    top: 50%;
+    left: 24px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 90;
+    background: rgba(22, 22, 26, 0.7);
+    padding: 20px 14px;
+    border-radius: 40px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    align-items: center;
+}
+
+.sidebar-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-btn:hover {
+    background: var(--accent);
+    transform: scale(1.08);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.creator-profile-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.creator-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--accent), #bc00dd);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid transparent;
+    transition: 0.2s;
+}
+.creator-profile-badge:hover .creator-avatar {
+    border-color: var(--text-main);
+}
+
+/* HEADER */
+header {
+    text-align: center;
+    padding: 40px 20px;
+    background: radial-gradient(circle at top, #1c1c24, var(--bg-main));
+    border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+    font-size: 38px;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: orange;
+    text-shadow: 0 0 10px orange;
+}
+
+/* ADMIN BTN */
+#mainBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(45deg, orange, gold);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+    color: black;
+}
+
+/* FORMULAIRES & OVERLAYS */
+.overlays-container {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(4, 4, 6, 0.85);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.modal-box {
+    width: 90%;
+    max-width: 500px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.7);
+    text-align: center;
+}
+
+#loginBox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: black;
+    z-index: 110;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+input, select, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    font-size: 15px;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+    outline: none;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.red { background: red; color: white; }
+.green { background: green; color: white; }
+.blue { background: deepskyblue; color: white; }
+.orange { background: orange; color: black; }
+.btn-primary { background: var(--accent); color: white; }
+.btn-secondary { background: rgba(255,255,255,0.08); color: white; }
+
+/* 🎬 GRANDE FENÊTRE IMMERSIVE POUR LES DIRECTS */
+.tiktok-player-view {
+    width: 95%;
+    max-width: 1100px;
+    height: 85vh;
+    background: #000;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+}
+
+.tiktok-video-side {
+    flex: 1.4;
+    background: #020202;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.media-canvas-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.media-canvas-container video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.video-footer-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px 24px;
+    box-sizing: border-box;
+    background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.tiktok-comments-side {
+    flex: 1;
+    background: #0e0e11;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+}
+
+.comments-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* 👤 FENÊTRE PROFIL COMPLET */
+.profile-view-box {
+    width: 90%;
+    max-width: 750px;
+    background: var(--bg-card);
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    padding: 32px;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.profile-header-ui {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+/* CHAT ET CARTES COMPORTEMENTALES */
+#chat {
+    max-height: 250px;
+    overflow-y: auto;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.card {
+    background: #1c1c1c;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 8px;
+}
+.card-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.annonce-card {
+    border: 2px solid orange;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    margin: 8px 0;
+}
+
+.links {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px;
+}
+.links a {
+    flex: 1;
+    text-align: center;
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 12px;
+    text-decoration: none;
+    color: white;
+}
+.discord { background: #5865F2; box-shadow: 0 0 15px #5865F2; }
+.roblox { background: red; box-shadow: 0 0 15px red; }
+</style>
+</head>
+<body>
+
+<div class="tiktok-sidebar">
+    <button class="sidebar-btn" onclick="startLiveStreaming()" title="Lancer un Live" style="font-size:18px;">🔴</button>
+    <div id="creatorBadgeContainer"></div>
+</div>
+
+<header>
+    <h1 id="txt-title">🇫🇷 REAL RP 🇫🇷</h1>
+    <p id="txt-subtitle" style="color:var(--text-secondary)">RP • Police • Pompiers • DAC • Territoires</p>
+</header>
+
+<div id="annonceBox" style="padding:0 15px;"></div>
+
+<button id="mainBtn" onclick="openAdmin()">MENU ADMIN</button>
+
+<div id="loginBox">
+    <h2 id="txt-loginTitle">Créer un compte Plateforme</h2>
+    <p style="color: gray; font-size: 14px;">Indiquez votre e-mail pour suivre les mises à jour.</p>
+    <input id="nickInput" placeholder="Surnom / Pseudo RP">
+    <input id="authEmail" type="email" placeholder="Adresse e-mail unique">
+    <br><br>
+    <button class="green" id="btn-loginValidate" onclick="processAuthentication()">Valider & Rejoindre</button>
+</div>
+
+<div id="modalOverlayContainer" class="overlays-container" onclick="closeAllModals(event)">
+    
+    <div id="box-settings" class="modal-box" onclick="event.stopPropagation()">
+        <button class="btn-secondary" style="position:absolute; top:15px; right:15px; padding: 5px 10px;" onclick="openMyProfileView()">✕</button>
+        <h2 id="txt-settingsTitle">Configuration du Profil</h2>
+        <p style="font-size:12px; color:orange;" id="txt-nameTimeInfo">Changer de nom requiert 5 jours d'ancienneté.</p>
+        <input id="settingsName" placeholder="Nouveau Pseudo">
+        <select id="settingsType">
+            <option value="normal">Standard (Normal)</option>
+            <option value="pro">Professionnel (Pro)</option>
+            <option value="publicite">Publicité (Ads)</option>
+        </select>
+        <br><br>
+        <button class="btn-primary" onclick="saveAccountSettings()">Enregistrer</button>
+    </div>
+
+    <div id="box-player" class="tiktok-player-view" onclick="event.stopPropagation()">
+        <button class="btn-secondary" style="position:absolute; top:20px; right:20px; z-index:100;" onclick="closeAllModals(null)">✕ Fermer</button>
+        <div class="tiktok-video-side">
+            <div class="media-canvas-container" id="mediaCanvas"></div>
+            <div class="video-footer-info">
+                <div>
+                    <h3 id="ui-videoAuthor" style="margin:0;">@User</h3>
+                    <p id="ui-videoTitle" style="margin:6px 0 0 0; font-size:14px; color:var(--text-secondary)">Titre</p>
+                    <span id="ui-videoViews" style="font-size:12px; color:gray;">👁️ 0 spectateurs</span>
+                </div>
+            </div>
+        </div>
+        <div class="tiktok-comments-side">
+            <h3>Commentaires Direct</h3>
+            <div class="comments-list" id="ui-commentsList"></div>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <input id="ui-newCommentInput" placeholder="Ajouter un commentaire...">
+                <button class="btn-primary" onclick="submitLiveComment()">💬</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="box-profile" class="profile-view-box" onclick="event.stopPropagation()">
+        <button class="btn-secondary" style="position:absolute; top:20px; right:20px;" onclick="closeAllModals(null)">✕ Fermer</button>
+        <button class="btn-secondary" style="position:absolute; top:20px; right:130px;" onclick="switchToSettingsSubModal()">⚙️ Paramètres</button>
+        <div class="profile-header-ui">
+            <div class="creator-avatar" style="width:65px; height:65px; font-size:20px;" id="myProfileLetter">U</div>
+            <div>
+                <h2 id="myProfileName" style="margin:0;">@Utilisateur</h2>
+                <p id="myProfileTypeDisplay" style="margin:4px 0 0 0; font-size:13px; color:var(--accent);"></p>
+            </div>
+        </div>
+        <textarea id="myProfileBio" placeholder="Description du profil..." rows="2" style="resize:none;" onchange="updateProfileBioData()"></textarea>
+        <input id="myProfileLink" placeholder="Lien externe (Discord, etc.)" onchange="updateProfileBioData()">
+        <div id="ui-renderedLinkContainer" style="text-align:left; margin-top:5px;"></div>
+    </div>
+
+</div>
+
+<div id="adminOverlay" class="overlays-container" style="background:rgba(0,0,0,0.95)">
+    <div id="adminBox" class="modal-box" style="max-width:900px; text-align:left; max-height: 90vh; overflow-y: auto;">
+        <button style="position:absolute; top:10px; right:10px;" onclick="closeAdmin()">❌</button>
+        <h2 id="txt-adminPanelTitle">⚙ ADMIN PANEL</h2>
+        
+        <h3 id="txt-addAdminTitle">➕ Ajouter un membre du Staff</h3>
+        <input id="newName" placeholder="Nom">
+        <input id="newEmail" placeholder="Email">
+        <div style="display: flex; gap: 10px;">
+            <button class="green" style="flex: 1;" onclick="addStaff('admin')">Ajouter Admin</button>
+            <button class="blue" style="flex: 1;" onclick="addStaff('cofonda')">Ajouter Cofondateur (Max 1)</button>
+        </div>
+        
+        <hr>
+        <h3>👑 Cofondateur (Maximum 1)</h3>
+        <div id="cofondaList"></div>
+        
+        <h3 id="txt-adminsListTitle">👮 Admins & Permissions Live</h3>
+        <div id="adminList"></div>
+        
+        <hr>
+        <h3 id="txt-territoriesTitle">🗺 Territoires</h3>
+        <select id="territorySelect"></select><br>
+        <select id="adminSelect"></select>
+        <button class="blue" id="btn-assignTerritory" onclick="assignTerritory()">Assigner</button>
+        <div id="territoryList"></div><hr>
+        <h3>⛔ Ban</h3>
+        <input id="banEmail" placeholder="Email">
+        <button class="red" id="btn-ban" onclick="ban()">Ban</button>
+        <button class="green" id="btn-unban" onclick="unban()">Unban</button>
+        <div id="banList"></div><hr>
+        <h3 id="txt-rpAnnouncementsTitle">📢 Annonces RP</h3>
+        <button class="orange" id="btn-createAnnouncement" onclick="addAnnonce()">Créer une annonce</button>
+    </div>
+</div>
+
+<div style="padding:24px; max-width:1200px; margin:0 auto;">
+    <h2 id="txt-globalChatTitle">💬 DISCUSSION GLOBALE</h2>
+    <div id="chat"></div>
+    <div style="display:flex; gap:10px;">
+        <input id="msg" placeholder="Message (500 car. max)" maxlength="500" onkeydown="checkEnter(event)" style="margin:0;">
+        <button class="btn-primary" id="btn-sendMsg" onclick="sendMsg()">Envoyer</button>
+    </div>
+</div>
+
+<div class="links">
+    <a class="discord" id="btn-linkDiscord" href="https://discord.gg/avp8udxF3" target="_blank">DISCORD RP</a>
+    <a class="roblox" id="btn-linkRoblox" href="https://www.roblox.com/share?v=v2&code=5ihdm3h6luwg4c" target="_blank">JEU ROBLOX</a>
+</div>
+
+<script>
+/* ===== VARIABLES DATA SYSTEMES ===== */
+const ownerEmail = "m6739376@gmail.com";
+let isAdminConnected = false; 
+
+let admins = JSON.parse(localStorage.getItem("admins") || "[]");
+let cofonda = JSON.parse(localStorage.getItem("cofonda") || "[]");
+let bans = JSON.parse(localStorage.getItem("bans") || "[]");
+let territories = JSON.parse(localStorage.getItem("territories") || "[]");
+let chat = JSON.parse(localStorage.getItem("chat") || "[]");
+let annonces = JSON.parse(localStorage.getItem("annonces") || "[]");
+
+let db_account = JSON.parse(localStorage.getItem("premium_user_profile") || "null");
+let liveComments = [];
+
+let nickname = localStorage.getItem("nick");
+let loginDate = localStorage.getItem("loginDate");
+let today = new Date().toISOString().split("T")[0];
+
+if(loginDate !== today){
+    nickname = null;
+    localStorage.removeItem("nick");
+    localStorage.removeItem("loginDate");
+}
+
+const staticLabels = {
+    title: "🇫🇷 REAL RP 🇫🇷", 
+    subtitle: "RP • Police • Pompiers • DAC • Territoires", 
+    menuAdmin: "MENU ADMIN",
+    loginTitle: "Choisir un compte Plateforme", 
+    nickPlaceholder: "Surnom / Pseudo RP", 
+    adminPanelTitle: "⚙ ADMIN PANEL", 
+    addAdminTitle: "➕ Staff Panel", 
+    namePlaceholder: "Nom", 
+    emailPlaceholder: "Email",
+    adminsListTitle: "👮 Admins", 
+    days: "jours", 
+    territoriesTitle: "🗺 Territoires", 
+    assign: "Assigner",
+    remove: "Retirer", 
+    banEmailPlaceholder: "Email", 
+    createAnnouncement: "Créer une annonce", 
+    rpAnnouncementsTitle: "📢 Annonces RP",
+    globalChatTitle: "💬 DISCUSSION GLOBALE", 
+    msgPlaceholder: "Message (500 car. max)", 
+    send: "Envoyer", 
+    promptEmail: "Email admin",
+    accessDenied: "Accès refusé ❌", 
+    promptAnnonce: "Texte de l'annonce RP :",
+    charLimitAlert: "Votre message dépasse la limite de 500 caractères !",
+    settingsTitle: "Configuration du Profil", 
+    nameTimeInfo: "Changer de nom requiert 5 jours d'ancienneté.",
+    territoriesOptions: ["Port", "Magasin de vêtements", "Poste de police", "Hôpital", "Caserne de pompiers", "Garage", "Gare / arrêt de bus"]
+};
+
+let currentStreamObject = null;
+
+window.addEventListener('load', () => {
+    if(!nickname || !db_account) {
+        document.getElementById("loginBox").style.display = "flex";
+    } else {
+        renderInterfaceElements();
+    }
+    initLabels();
+    renderBan();
+    renderChat();
+});
+
+function initLabels() {
+    document.getElementById("txt-title").innerText = staticLabels.title;
+    document.getElementById("txt-subtitle").innerText = staticLabels.subtitle;
+    document.getElementById("mainBtn").innerText = staticLabels.menuAdmin;
+    document.getElementById("txt-loginTitle").innerText = staticLabels.loginTitle;
+    document.getElementById("nickInput").placeholder = staticLabels.nickPlaceholder;
+    document.getElementById("txt-adminPanelTitle").innerText = staticLabels.adminPanelTitle;
+    document.getElementById("newName").placeholder = staticLabels.namePlaceholder;
+    document.getElementById("newEmail").placeholder = staticLabels.emailPlaceholder;
+    document.getElementById("txt-territoriesTitle").innerText = staticLabels.territoriesTitle;
+    document.getElementById("btn-assignTerritory").innerText = staticLabels.assign;
+    document.getElementById("banEmail").placeholder = staticLabels.banEmailPlaceholder;
+    document.getElementById("txt-rpAnnouncementsTitle").innerText = staticLabels.rpAnnouncementsTitle;
+    document.getElementById("btn-createAnnouncement").innerText = staticLabels.createAnnouncement;
+    document.getElementById("txt-globalChatTitle").innerText = staticLabels.globalChatTitle;
+    document.getElementById("msg").placeholder = staticLabels.msgPlaceholder;
+    document.getElementById("btn-sendMsg").innerText = staticLabels.send;
+    document.getElementById("txt-settingsTitle").innerText = staticLabels.settingsTitle;
+    document.getElementById("txt-nameTimeInfo").innerText = staticLabels.nameTimeInfo;
+
+    const territorySelect = document.getElementById("territorySelect");
+    territorySelect.innerHTML = staticLabels.territoriesOptions.map(t => `<option>${t}</option>`).join("");
+
+    renderAdmins();
+    renderTerritories();
+    renderAnnonces();
+    renderInterfaceElements();
+}
+
+/* ===== GESTION OVERLAYS & MODALS ===== */
+function openModalView(boxId) {
+    document.getElementById("modalOverlayContainer").style.display = "flex";
+    document.querySelectorAll('.modal-box, .profile-view-box, .tiktok-player-view').forEach(el => el.style.display = 'none');
+    document.getElementById(boxId).style.display = "block";
+    if(boxId === 'box-player') document.getElementById(boxId).style.display = "flex";
+}
+
+function closeAllModals(event) {
+    if(!event || event.target.id === "modalOverlayContainer" || event === null) {
+        if(currentStreamObject) {
+            currentStreamObject.getTracks().forEach(track => track.stop());
+            currentStreamObject = null;
+        }
+        document.getElementById("mediaCanvas").innerHTML = "";
+        document.getElementById("modalOverlayContainer").style.display = "none";
+    }
+}
+
+function processAuthentication() {
+    let name = document.getElementById("nickInput").value.trim();
+    let email = document.getElementById("authEmail").value.trim();
+    if(!name || !email) return alert("Remplissez tous les champs !");
+
+    nickname = name;
+    localStorage.setItem("nick", nickname);
+    localStorage.setItem("loginDate", today);
+
+    db_account = {
+        name: name, email: email, type: "normal", createdAt: Date.now(), bio: "", link: ""
+    };
+    localStorage.setItem("premium_user_profile", JSON.stringify(db_account));
+    
+    document.getElementById("loginBox").style.display = "none";
+    renderInterfaceElements();
+}
+
+function switchToSettingsSubModal() {
+    document.getElementById("settingsName").value = db_account.name;
+    document.getElementById("settingsType").value = db_account.type;
+    openModalView("box-settings");
+}
+
+function saveAccountSettings() {
+    let newName = document.getElementById("settingsName").value.trim();
+    let newType = document.getElementById("settingsType").value;
+    let age = Math.floor((Date.now() - db_account.createdAt) / (1000 * 60 * 60 * 24));
+
+    if(newName !== db_account.name && age < 5) {
+        alert(`Refusé. Votre compte doit avoir 5 jours d'ancienneté (Actuel : ${age} jours).`);
+        return;
+    }
+    db_account.name = newName;
+    db_account.type = newType;
+    nickname = newName;
+    localStorage.setItem("nick", nickname);
+    localStorage.setItem("premium_user_profile", JSON.stringify(db_account));
+    renderInterfaceElements();
+    openMyProfileView();
+}
+
+function renderInterfaceElements() {
+    let container = document.getElementById("creatorBadgeContainer");
+    if(db_account) {
+        container.innerHTML = `
+            <div class="creator-profile-badge" onclick="openMyProfileView()">
+                <div class="creator-avatar">${db_account.name.substring(0,2).toUpperCase()}</div>
+                <span style="font-size:11px;">@${db_account.name}</span>
+            </div>
+        `;
+    }
+}
+
+/* ===== PARTAGE D'ÉCRAN LIVE DIRECT PROTÉGÉ ===== */
+function checkIfCanLive() {
+    // Le créateur propriétaire peut toujours lancer un direct
+    if(db_account && db_account.email === ownerEmail) return true;
+    
+    // Vérification dans la liste du cofondateur
+    let foundCofonda = cofonda.find(c => c.email === db_account.email);
+    if(foundCofonda && foundCofonda.canLive) return true;
+
+    // Vérification dans la liste des admins
+    let foundAdmin = admins.find(a => a.email === db_account.email);
+    if(foundAdmin && foundAdmin.canLive) return true;
+
+    return false;
+}
+
+async function startLiveStreaming() {
+    if(!checkIfCanLive()) {
+        alert("Accès refusé ❌ : Vous n'avez pas l'autorisation de lancer un direct sur ce site.");
+        return;
+    }
+
+    let title = prompt("Titre de votre Direct / Partage d'écran :");
+    if(!title) return;
+    try {
+        currentStreamObject = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+        liveComments = [];
+        
+        openModalView("box-player");
+        document.getElementById("ui-videoTitle").innerText = "[🔴 LIVE] " + title;
+        document.getElementById("ui-videoAuthor").innerText = "@" + db_account.name;
+        document.getElementById("ui-videoViews").innerText = `👁️ ${Math.floor(Math.random() * 8) + 2} spectateurs`;
+        
+        let canvas = document.getElementById("mediaCanvas");
+        canvas.innerHTML = `<video id="livePreview" autoplay playsinline style="width:100%; height:100%; object-fit:contain;"></video>`;
+        document.getElementById("livePreview").srcObject = currentStreamObject;
+        
+        currentStreamObject.getVideoTracks()[0].onended = () => { closeAllModals(null); };
+        renderLiveCommentsUI();
+    } catch(err) { console.error(err); }
+}
+
+function renderLiveCommentsUI() {
+    let container = document.getElementById("ui-commentsList");
+    if(liveComments.length === 0) {
+        container.innerHTML = `<p style="color:gray; font-size:13px; padding:10px;">Aucun commentaire sur le live.</p>`;
+        return;
+    }
+    container.innerHTML = liveComments.map(c => `
+        <div style="background:rgba(255,255,255,0.03); padding:8px; border-radius:8px; margin-bottom:6px; text-align:left;">
+            <b style="color:var(--accent); font-size:12px;">@${c.user} :</b> <span style="font-size:13px;">${c.text}</span>
+        </div>
+    `).join("");
+}
+
+function submitLiveComment() {
+    let txt = document.getElementById("ui-newCommentInput").value.trim();
+    if(!txt) return;
+    liveComments.push({ user: db_account.name, text: txt });
+    document.getElementById("ui-newCommentInput").value = "";
+    renderLiveCommentsUI();
+}
+
+/* ===== PROFILE UTILISATEUR ===== */
+function openMyProfileView() {
+    openModalView("box-profile");
+    document.getElementById("myProfileName").innerText = "@" + db_account.name;
+    document.getElementById("myProfileLetter").innerText = db_account.name.substring(0,2).toUpperCase();
+    document.getElementById("myProfileBio").value = db_account.bio || "";
+    document.getElementById("myProfileLink").value = db_account.link || "";
+    
+    let typeTxt = "Compte Standard";
+    if(db_account.type === "pro") typeTxt = "Compte Professionnel";
+    if(db_account.type === "publicite") typeTxt = "Compte Partenaire Publicitaire";
+    document.getElementById("myProfileTypeDisplay").innerText = typeTxt;
+
+    updateRenderedLinkUI();
+}
+
+function updateProfileBioData() {
+    db_account.bio = document.getElementById("myProfileBio").value;
+    db_account.link = document.getElementById("myProfileLink").value;
+    localStorage.setItem("premium_user_profile", JSON.stringify(db_account));
+    updateRenderedLinkUI();
+}
+
+function updateRenderedLinkUI() {
+    let container = document.getElementById("ui-renderedLinkContainer");
+    if(db_account.link) container.innerHTML = `🔗 <a href="${db_account.link}" target="_blank" style="color:deepskyblue;">${db_account.link}</a>`;
+    else container.innerHTML = "";
+}
+
+/* ===== SECTIONS ADMIN ET PANELS DE JEU ===== */
+function openAdmin(){
+    let email = prompt(staticLabels.promptEmail);
+    if(email === ownerEmail){
+        isAdminConnected = true; 
+        document.getElementById("adminOverlay").style.display = "flex";
+        loadAdminSelect();
+        renderAdmins();
+        renderAnnonces(); 
+    } else alert(staticLabels.accessDenied);
+}
+
+function closeAdmin(){ document.getElementById("adminOverlay").style.display = "none"; }
+
+function addStaff(role){
+    let name = document.getElementById("newName").value.trim();
+    let email = document.getElementById("newEmail").value.trim();
+    if(!name || !email) return alert("Veuillez remplir le nom et l'email !");
+    
+    if(role === 'admin') {
+        admins.push({name, email, date:Date.now(), canLive: false});
+        localStorage.setItem("admins", JSON.stringify(admins));
+    } else if(role === 'cofonda') {
+        if(cofonda.length >= 1) {
+            alert("Erreur : Il ne peut y avoir qu'un seul cofondateur au maximum !");
+            return;
+        }
+        cofonda.push({name, email, date:Date.now(), canLive: false});
+        localStorage.setItem("cofonda", JSON.stringify(cofonda));
+    }
+    
+    document.getElementById("newName").value = "";
+    document.getElementById("newEmail").value = "";
+    renderAdmins();
+    loadAdminSelect();
+}
+
+function removeAdmin(index) {
+    admins.splice(index, 1);
+    localStorage.setItem("admins", JSON.stringify(admins));
+    renderAdmins();
+    loadAdminSelect();
+}
+
+function removeCofonda() {
+    cofonda = [];
+    localStorage.setItem("cofonda", JSON.stringify(cofonda));
+    renderAdmins();
+}
+
+/* TOGGLES POUR ACCORDER OU RETIRER LA PERMISSION DE LIVE */
+function toggleCofondaLive() {
+    if(cofonda.length > 0) {
+        cofonda[0].canLive = !cofonda[0].canLive;
+        localStorage.setItem("cofonda", JSON.stringify(cofonda));
+        renderAdmins();
+    }
+}
+
+function toggleAdminLive(index) {
+    admins[index].canLive = !admins[index].canLive;
+    localStorage.setItem("admins", JSON.stringify(admins));
+    renderAdmins();
+}
+
+function renderAdmins(){
+    // Rendu du Cofondateur unique avec contrôle Live
+    let cofondaBox = document.getElementById("cofondaList");
+    if(cofonda.length === 0) {
+        cofondaBox.innerHTML = `<p style="color:gray; font-size:13px;">Aucun cofondateur assigné.</p>`;
+    } else {
+        let c = cofonda[0];
+        cofondaBox.innerHTML = `
+            <div class="card card-flex">
+                <div>
+                    <b>👑 ${c.name}</b><br>${c.email}<br>
+                    <small>Permission Direct : ${c.canLive ? '<span style="color:green;font-weight:bold;">Activée ✅</span>' : '<span style="color:red;">Désactivée ❌</span>'}</small>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <button class="orange" onclick="toggleCofondaLive()">${c.canLive ? "Bloquer Live" : "Autoriser Live"}</button>
+                    <button class="red" onclick="removeCofonda()">Supprimer</button>
+                </div>
+            </div>
+        `;
+    }
+
+    // Rendu de la liste des Admins avec contrôle Live
+    document.getElementById("adminList").innerHTML = admins.map((a,i)=>`
+        <div class="card card-flex">
+            <div>
+                <b>👮 ${a.name}</b><br>${a.email}<br>
+                <small>Permission Direct : ${a.canLive ? '<span style="color:green;font-weight:bold;">Activée ✅</span>' : '<span style="color:red;">Désactivée ❌</span>'}</small>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="orange" onclick="toggleAdminLive(${i})">${a.canLive ? "Bloquer Live" : "Autoriser Live"}</button>
+                <button class="red" onclick="removeAdmin(${i})">Supprimer l'Admin</button>
+            </div>
+        </div>
+    `).join("");
+}
+
+function loadAdminSelect(){
+    let combinedStaff = [];
+    cofonda.forEach(c => combinedStaff.push({name: `[Cofonda] ${c.name}`}));
+    admins.forEach(a => combinedStaff.push({name: `[Admin] ${a.name}`}));
+
+    document.getElementById("adminSelect").innerHTML = combinedStaff.map((s,i)=>`<option value="${i}">${s.name}</option>`).join("");
+}
+
+function assignTerritory(){
+    let zone = document.getElementById("territorySelect").value;
+    let selectIndex = document.getElementById("adminSelect").value;
+    
+    let combinedStaff = [];
+    cofonda.forEach(c => combinedStaff.push(c.name));
+    admins.forEach(a => combinedStaff.push(a.name));
+    
+    let staffName = combinedStaff[selectIndex];
+    if(!staffName) return;
+
+    territories.push({zone, owner: staffName});
+    localStorage.setItem("territories", JSON.stringify(territories));
+    renderTerritories();
+}
+
+function renderTerritories(){
+    document.getElementById("territoryList").innerHTML = territories.map((t,i)=>`
+        <div class="card">🗺 ${t.zone} → 👮 ${t.owner} <button class="red" onclick="removeTerritory(${i})">${staticLabels.remove}</button></div>
+    `).join("");
+}
+
+function removeTerritory(i){
+    territories.splice(i,1);
+    localStorage.setItem("territories", JSON.stringify(territories));
+    renderTerritories();
+}
+
+function ban(){
+    let e = document.getElementById("banEmail").value;
+    if(!e) return;
+    bans.push(e);
+    localStorage.setItem("bans", JSON.stringify(bans));
+    renderBan();
+}
+
+function unban(){
+    let e = document.getElementById("banEmail").value;
+    bans = bans.filter(x=>x!==e);
+    localStorage.setItem("bans", JSON.stringify(bans));
+    renderBan();
+}
+
+function renderBan(){ document.getElementById("banList").innerHTML = bans.map(b=>`<div class="card">${b}</div>`).join(""); }
+
+/* ===== DISCUSSION COEUR DU TCHAT ===== */
+function checkEnter(event) { if (event.key === "Enter") { event.preventDefault(); sendMsg(); } }
+
+function sendMsg(){
+    let t = document.getElementById("msg").value;
+    if(!t || !nickname) return;
+    if(t.length > 500) { alert(staticLabels.charLimitAlert); return; }
+    chat.push({user:nickname, text:t});
+    localStorage.setItem("chat", JSON.stringify(chat));
+    renderChat();
+    document.getElementById("msg").value = ""; 
+}
+
+function stringToColor(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) { hash = str.charCodeAt(i) + ((hash << 5) - hash); }
+    return `hsl(${Math.abs(hash % 360)}, 85%, 65%)`; 
+}
+
+function renderChat(){
+    let box = document.getElementById("chat");
+    box.innerHTML = chat.map(c=>`
+        <div class="card"><b style="color: ${stringToColor(c.user)}">${c.user}:</b> ${c.text}</div>
+    `).join("");
+    box.scrollTop = box.scrollHeight;
+}
+
+function addAnnonce(){
+    let txt = prompt(staticLabels.promptAnnonce);
+    if(!txt) return;
+    annonces.push({ text: txt, time: Date.now() });
+    localStorage.setItem("annonces", JSON.stringify(annonces));
+    renderAnnonces();
+}
+
+function cleanAnnonces(){
+    let now = Date.now();
+    annonces = annonces.filter(a => now - a.time < 3 * 24 * 60 * 60 * 1000);
+    localStorage.setItem("annonces", JSON.stringify(annonces));
+}
+
+function renderAnnonces(){
+    cleanAnnonces();
+    document.getElementById("annonceBox").innerHTML = annonces.map((a,i)=>`
+        <div class="card annonce-card"><span>📢 ${a.text}</span>
+        ${isAdminConnected ? `<button class="red" onclick="removeAnnonce(${i})">${staticLabels.remove}</button>` : ''}</div>
+    `).join("");
+}
+
+function removeAnnonce(index){
+    if(!isAdminConnected) return;
+    annonces.splice(index, 1);
+    localStorage.setItem("annonces", JSON.stringify(annonces));
+    renderAnnonces();
+}
+
+setInterval(renderAnnonces, 5000);
+</script>
+</body>
+</html>
