@@ -58,7 +58,7 @@
 
         .sidebar-menu { 
             flex: 1; 
-            overflow-y: auto; /* Active le scroll vertical pour les catégories */
+            overflow-y: auto; 
             padding: 15px 0; 
         }
 
@@ -438,19 +438,19 @@
             </div>
         </div>
 
-        <div id="v-stats" class="app-view"><div class="section-box"><div class="section-title">Analyses de croissance</div></div></div>
-        <div id="v-reports" class="app-view"><div class="section-box"><div class="section-title">Rapports comptables</div></div></div>
-        <div id="v-deliveries" class="app-view"><div class="section-box"><div class="section-title">Suivi Code Postal & Livraisons</div></div></div>
-        <div id="v-categories" class="app-view"><div class="section-box"><div class="section-title">Familles d'articles</div></div></div>
-        <div id="v-stocks" class="app-view"><div class="section-box"><div class="section-title">Alertes Stocks</div></div></div>
-        <div id="v-clients" class="app-view"><div class="section-box"><div class="section-title">Fiches CRM Clients</div></div></div>
-        <div id="v-messaging" class="app-view"><div class="section-box"><div class="section-title">Messagerie clients</div></div></div>
-        <div id="v-reviews" class="app-view"><div class="section-box"><div class="section-title">Avis clients</div></div></div>
-        <div id="v-notifications" class="app-view"><div class="section-box"><div class="section-title">Notifications</div></div></div>
-        <div id="v-roles" class="app-view"><div class="section-box"><div class="section-title">Rôles & Permissions</div></div></div>
-        <div id="v-staff" class="app-view"><div class="section-box"><div class="section-title">Membres du Personnel</div></div></div>
-        <div id="v-payments" class="app-view"><div class="section-box"><div class="section-title">Paiements</div></div></div>
-        <div id="v-settings" class="app-view"><div class="section-box"><div class="section-title">Paramètres du site</div></div></div>
+        <div id="v-stats" class="app-view"><div class="section-box"><div class="section-title">Analyses de croissance</div><p style="color:var(--text-secondary); font-size:13px;">Données en cours de consolidation globale.</p></div></div>
+        <div id="v-reports" class="app-view"><div class="section-box"><div class="section-title">Rapports d'Activité Comptable</div><p style="color:var(--text-secondary); font-size:13px;">Génération automatique en fin de cycle mensuel.</p></div></div>
+        <div id="v-deliveries" class="app-view"><div class="section-box"><div class="section-title">Suivi Code Postal & Livraisons</div><p style="color:var(--text-secondary); font-size:13px;">Zone logistique et restrictions d'expéditions.</p></div></div>
+        <div id="v-categories" class="app-view"><div class="section-box"><div class="section-title">Catégories de Produits</div><p style="color:var(--text-secondary); font-size:13px;">Configuration des taxonomies du catalogue.</p></div></div>
+        <div id="v-stocks" class="app-view"><div class="section-box"><div class="section-title">Alertes Stocks & Réapprovisionnements</div><p style="color:var(--text-secondary); font-size:13px;">Seuils critiques et liaisons fournisseurs.</p></div></div>
+        <div id="v-roles" class="app-view"><div class="section-box"><div class="section-title">Rôles & Permissions Générales</div><p style="color:var(--text-secondary); font-size:13px;">Matrice fine des autorisations d'API.</p></div></div>
+        <div id="v-staff" class="app-view"><div class="section-box"><div class="section-title">Membres du Personnel</div><p style="color:var(--text-secondary); font-size:13px;">Fiches internes de l'équipe logistique.</p></div></div>
+        <div id="v-clients" class="app-view"><div class="section-box"><div class="section-title">Liste des Clients Enregistrés</div><p style="color:var(--text-secondary); font-size:13px;">Répertoire des comptes acheteurs.</p></div></div>
+        <div id="v-messaging" class="app-view"><div class="section-box"><div class="section-title">Messagerie clients</div><p style="color:var(--text-secondary); font-size:13px;">Tickets de support et service après-vente.</p></div></div>
+        <div id="v-reviews" class="app-view"><div class="section-box"><div class="section-title">Avis clients</div><p style="color:var(--text-secondary); font-size:13px;">Modération des notes déposées sur le catalogue.</p></div></div>
+        <div id="v-notifications" class="app-view"><div class="section-box"><div class="section-title">Notifications</div><p style="color:var(--text-secondary); font-size:13px;">Gestion des serveurs de push web et e-mails transactionnels.</p></div></div>
+        <div id="v-payments" class="app-view"><div class="section-box"><div class="section-title">Paiements</div><p style="color:var(--text-secondary); font-size:13px;">Passerelle de règlement Stripe / PayPal.</p></div></div>
+        <div id="v-settings" class="app-view"><div class="section-box"><div class="section-title">Paramètres globaux du site</div><p style="color:var(--text-secondary); font-size:13px;">Maintenance et configurations serveurs.</p></div></div>
 
     </main>
 </div>
@@ -491,9 +491,13 @@
     let currentFilterOrders = "Tous";
     let currentUserRole = "client";
 
-    // GESTION DU SYSTÈME DE SESSION ET DES DROITS
+    // LOGIQUE DE SESSION SÉCURISÉE SANS REDIRECTION PRÉMATURÉE
     onAuthStateChanged(auth, user => {
-        if (!user) { window.location.href = 'index.html'; return; }
+        if (!user) { 
+            window.location.href = 'index.html'; 
+            return; 
+        }
+        
         document.getElementById('adminEmailTag').innerText = user.email;
         
         onValue(ref(db, `users/${user.uid}`), snapshot => {
@@ -510,7 +514,7 @@
 
     document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-    // FONCTIONNALITÉ : CRÉATION DU COMPTE ADMIN PAR LE FONDATEUR
+    // CRÉATION DE COMPTE MEMBRE ÉQUIPE
     document.getElementById('btnCreateAdminAccount').addEventListener('click', () => {
         if (currentUserRole !== 'fondateur' && currentUserRole !== 'admin') {
             return alert("Seul le Fondateur ou un Admin peut créer de nouveaux accès Équipe.");
@@ -542,7 +546,7 @@
         });
     });
 
-    // SYSTEME DE NAVIGATION DYNAMIQUE
+    // ROUTING / NAVIGATION INTERNE
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -560,14 +564,14 @@
         });
     });
 
-    // MODULE CLOCK EN DIRECT
+    // HORLOGE LOGISTIQUE
     setInterval(() => {
         const d = new Date();
         document.getElementById('liveClockTime').innerText = d.toLocaleTimeString('fr-FR');
         document.getElementById('liveClockDate').innerText = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
     }, 1000);
 
-    // FLUX DE SYNCHRONISATION CONSTANTE (REALTIME DATABASE)
+    // ECOUTE DE LA BASE EN TEMPS RÉEL
     let cachedOrders = {};
     onValue(ref(db), snapshot => {
         const data = snapshot.val() || {};
@@ -599,8 +603,8 @@
         const ctx = document.getElementById('mainDashboardChart').getContext('2d');
         const points = []; const labels = [];
         Object.values(orders).slice(-8).forEach(o => {
-            labels.push(o.id);
-            points.push(o.status !== "Refusée" ? parseFloat(o.total) : 0);
+            labels.push(o.id || 'N/A');
+            points.push(o.status !== "Refusée" ? parseFloat(o.total || 0) : 0);
         });
 
         if (globalChartInstance) globalChartInstance.destroy();
@@ -608,7 +612,7 @@
             type: 'line',
             data: {
                 labels: labels,
-                datasets: [{ label: 'Transactions valides (€)', data: points, borderColor: '#ffffff', backgroundColor: 'rgba(255,255,255,0.05)', fill: true, tension: 0.2 }]
+                datasets: [{ label: 'Transactions (€)', data: points, borderColor: '#ffffff', backgroundColor: 'rgba(255,255,255,0.05)', fill: true, tension: 0.2 }]
             },
             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#1a1a1e' } } } }
         });
@@ -618,19 +622,19 @@
         const tbody = document.getElementById('ordersTableMasterBody');
         tbody.innerHTML = '';
         
-        Object.keys(cachedOrders).sort((a,b) => cachedOrders[b].timestamp - cachedOrders[a].timestamp).forEach(key => {
+        Object.keys(cachedOrders).sort((a,b) => (cachedOrders[b].timestamp || 0) - (cachedOrders[a].timestamp || 0)).forEach(key => {
             const o = cachedOrders[key];
             if (currentFilterOrders !== "Tous" && o.status !== currentFilterOrders) return;
 
             const badgeClasses = { "En attente": "badge-pending", "Acceptée": "badge-accepted", "Expédiée": "badge-shipped", "Refusée": "badge-refused", "Terminée": "badge-done" };
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="font-weight:700;">${o.id}</td>
-                <td><strong>${o.clientName}</strong><br><small style="color:var(--text-secondary);">${o.address}</small></td>
-                <td>${o.products}</td>
-                <td style="font-weight:700;">${parseFloat(o.total).toFixed(2)} €</td>
-                <td><small>${o.method}</small></td>
-                <td><span class="badge ${badgeClasses[o.status] || ''}">${o.status}</span></td>
+                <td style="font-weight:700;">${o.id || 'N/A'}</td>
+                <td><strong>${o.clientName || 'Inconnu'}</strong><br><small style="color:var(--text-secondary);">${o.address || 'Aucune adresse'}</small></td>
+                <td>${o.products || '—'}</td>
+                <td style="font-weight:700;">${parseFloat(o.total || 0).toFixed(2)} €</td>
+                <td><small>${o.method || 'Standard'}</small></td>
+                <td><span class="badge ${badgeClasses[o.status] || ''}">${o.status || 'En attente'}</span></td>
                 <td style="text-align:right; white-space:nowrap;">
                     ${o.status === 'En attente' ? `<button class="btn-premium btn-success" onclick="modifyOrderState('${key}', 'Acceptée')">Accepter</button>` : ''}
                     ${o.status === 'Acceptée' ? `<button class="btn-premium btn-primary" onclick="modifyOrderState('${key}', 'Expédiée')">Expédier</button>` : ''}
@@ -665,7 +669,7 @@
         });
     });
 
-    // ENREGISTREMENT ET ÉDITION DES PRODUITS (CRUD)
+    // CRÉATION ET MODIFICATION DE PRODUIT (CRUD)
     document.getElementById('btnSaveProduct').addEventListener('click', () => {
         if (currentUserRole === 'support' || currentUserRole === 'moderateur') return alert("Vos accès ne vous permettent pas d'éditer le catalogue.");
         
@@ -704,7 +708,7 @@
             cell.innerHTML = `
                 <img src="${p.img || 'https://via.placeholder.com/150'}" style="width:100%; height:110px; object-fit:cover; border-radius:4px; background:#000;">
                 <p style="font-weight:700; font-size:12px; margin-top:6px; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${p.name}</p>
-                <p style="font-size:11px; color:var(--text-secondary);">${p.price.toFixed(2)} € — Qte: ${p.stock}</p>
+                <p style="font-size:11px; color:var(--text-secondary);">${(p.price || 0).toFixed(2)} € — Qte: ${p.stock || 0}</p>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:8px;">
                     <button class="btn-premium btn-secondary" onclick="fillProductFormToEdit('${key}')" style="padding:4px; font-size:11px;">Éditer</button>
                     <button class="btn-premium btn-danger" onclick="purgeProductItem('${key}')" style="padding:4px; font-size:11px;">Retirer</button>
@@ -719,12 +723,12 @@
             const p = snap.val();
             if(!p) return;
             document.getElementById('crudProdId').value = id;
-            document.getElementById('crudProdName').value = p.name;
+            document.getElementById('crudProdName').value = p.name || '';
             document.getElementById('crudProdImg').value = p.img || '';
             document.getElementById('crudProdCat').value = p.category || '';
             document.getElementById('crudProdDesc').value = p.desc || '';
-            document.getElementById('crudProdPrice').value = p.price;
-            document.getElementById('crudProdStock').value = p.stock;
+            document.getElementById('crudProdPrice').value = p.price || '';
+            document.getElementById('crudProdStock').value = p.stock || '';
             document.getElementById('productFormHeader').innerText = "Modification En Cours";
         }, { onlyOnce: true });
     };
@@ -734,7 +738,7 @@
         if (confirm("Confirmer la suppression définitive de cet article ?")) remove(ref(db, `products/${id}`));
     };
 
-    // SYSTEME DE ROLES ET PERMISSIONS DE L'EQUIPE (AVEC SUPPRESSION DIRECTE)
+    // GESTION DES ROLES & RECOVATION D'ACCÈS
     function renderAdminPrivilegesTable(users) {
         const tbody = document.getElementById('adminUsersTableBody');
         tbody.innerHTML = '';
@@ -776,7 +780,7 @@
         }
     };
 
-    // GENERATION DE L'AUDIT DES SECURI-LOGS
+    // SYSTEME DE TRAÇABILITE DES SECURILOGS
     function renderSecurityLogsTable(logs) {
         const fullBody = document.getElementById('fullSecurityLogsBody');
         const dashLogsBox = document.getElementById('dashLogsBox');
