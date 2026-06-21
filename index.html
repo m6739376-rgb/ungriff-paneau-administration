@@ -33,6 +33,44 @@
             display: flex; 
             overflow: hidden; 
         }
+
+        /* ÉCRAN DE CONNEXION SÉCURISÉ (S'AFFICHE EN PREMIER) */
+        #authOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h2 {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .login-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+        }
         
         /* BARRE LATÉRALE GAUCHE AVEC SYSTEME DE SCROLL */
         .sidebar { 
@@ -62,7 +100,6 @@
             padding: 15px 0; 
         }
 
-        /* Personnalisation de la barre de défilement (Scrollbar) à gauche */
         .sidebar-menu::-webkit-scrollbar {
             width: 4px;
         }
@@ -72,9 +109,6 @@
         .sidebar-menu::-webkit-scrollbar-thumb {
             background: var(--border);
             border-radius: 10px;
-        }
-        .sidebar-menu::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
         }
 
         .nav-category { 
@@ -231,7 +265,7 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-success { background: var(--success); color: black; }
         
-        /* TABLEAUX PRO */
+        /* TABLEAUX */
         .premium-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -268,6 +302,16 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
+<div id="authOverlay">
+    <div class="login-card">
+        <h2>UNGRIFF HQ</h2>
+        <p>Connexion sécurisée requise pour accéder au panneau d'administration</p>
+        <input type="email" id="loginEmail" placeholder="Adresse e-mail de l'administrateur" required>
+        <input type="password" id="loginPassword" placeholder="Mot de passe" required>
+        <button class="btn-premium btn-primary" id="btnLoginSubmit" style="width:100%; margin-top:15px; padding:14px;">Se connecter au système</button>
+    </div>
+</div>
 
 <div class="sidebar">
     <div class="sidebar-brand">
@@ -308,8 +352,8 @@
     </div>
     <div class="sidebar-footer">
         <div>
-            <p id="adminEmailTag" style="font-size:12px; font-weight:600; max-width:180px; overflow:hidden; text-overflow:ellipsis;">Chargement...</p>
-            <p id="adminRoleTag" style="font-size:10px; color:var(--text-secondary);">Rôle : Évaluation...</p>
+            <p id="adminEmailTag" style="font-size:12px; font-weight:600; max-width:180px; overflow:hidden; text-overflow:ellipsis;">Fermé</p>
+            <p id="adminRoleTag" style="font-size:10px; color:var(--text-secondary);">Rôle : Non connecté</p>
         </div>
         <button id="logoutBtn" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-size:16px;">🚪</button>
     </div>
@@ -317,7 +361,7 @@
 
 <div class="main-layout">
     <header>
-        <div style="font-size:13px; color:var(--text-secondary);" id="syncStatus">● Connecté en temps réel à Firebase Cloud</div>
+        <div style="font-size:13px; color:var(--text-secondary);" id="syncStatus">● Mode sécurisé activé</div>
         <div style="text-align:right;">
             <p id="liveClockDate" style="font-size:11px; color:var(--text-secondary);"></p>
             <p id="liveClockTime" style="font-size:16px; font-weight:700; letter-spacing:0.5px;"></p>
@@ -458,8 +502,8 @@
 <div id="rejectReasonModal" class="overlay">
     <div style="background:var(--bg-card); border:1px solid var(--border); padding:30px; border-radius:16px; width:100%; max-width:460px;">
         <h3 style="color:var(--danger); font-size:15px; margin-bottom:10px; text-transform:uppercase;">Justification Obligatoire du Refus</h3>
-        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">Indique le motif du refus. Le client verra ce texte s'afficher directement sur son compte dans l'historique de sa commande.</p>
-        <textarea id="modalTextRejectReason" placeholder="Exemple : Code postal hors zone de livraison / Rupture définitive sur ce produit..." rows="4"></textarea>
+        <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">Indique le motif du refus.</p>
+        <textarea id="modalTextRejectReason" placeholder="Exemple : Code postal hors zone de livraison..." rows="4"></textarea>
         <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
             <button class="btn-premium btn-secondary" onclick="document.getElementById('rejectReasonModal').style.display='none'">Retour</button>
             <button class="btn-premium btn-danger" id="modalBtnConfirmReject">Enregistrer le Refus</button>
@@ -469,7 +513,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -485,7 +529,7 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     
-    // CONFIGURATION FONDATEUR SUPRÊME UNIQUE (MOHAMED)
+    // FONDATION MASTER UNIQUE : MOHAMED
     const founderEmail = "m6739376@gmail.com";
 
     let globalChartInstance = null;
@@ -493,40 +537,66 @@
     let currentFilterOrders = "Tous";
     let currentUserRole = "client";
 
-    // BLOCAGE DE SÉCURITÉ ABSOLU À LA PREMIÈRE ENTRÉE
+    // GESTION DU FORMULAIRE DE CONNEXION INITIALE
+    document.getElementById('btnLoginSubmit').addEventListener('click', () => {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+
+        if(!email || !password) {
+            return alert("Veuillez remplir tous les champs.");
+        }
+
+        signInWithEmailAndPassword(auth, email, password)
+        .catch(err => {
+            alert("Erreur d'authentification : Identifiants introuvables ou incorrects.");
+        });
+    });
+
+    // ÉVALUATION STRICTE DE LA SÉCURITÉ EN TEMPS RÉEL
     onAuthStateChanged(auth, user => {
-        // 1. Si pas connecté du tout -> Éjection immédiate vers la page de connexion
         if (!user) { 
-            window.location.href = 'index.html'; 
+            // Si pas connecté, afficher impérativement l'overlay de login
+            document.getElementById('authOverlay').style.display = 'flex';
+            document.getElementById('adminEmailTag').innerText = "Fermé";
+            document.getElementById('adminRoleTag').innerText = "Rôle : Non connecté";
             return; 
         }
         
-        document.getElementById('adminEmailTag').innerText = user.email;
-        
-        // 2. Vérification des droits réels en base de données
+        // Lecture immédiate des permissions en base
         onValue(ref(db, `users/${user.uid}`), snapshot => {
             const u = snapshot.val();
             
-            // Assignation hiérarchique absolue pour Mohamed
+            // Mohamed prend automatiquement le grade suprême peu importe la base
             currentUserRole = (user.email === founderEmail) ? "fondateur suprême" : (u ? u.role : "client");
-            document.getElementById('adminRoleTag').innerText = "Rôle : " + currentUserRole.toUpperCase();
 
-            // 3. Si le compte n'a pas de rôle admin valide (ou si c'est un faux compte / client) -> Éjection et déconnexion
+            // Si c'est un compte inconnu, mal configuré ou client -> Dehors !
             if (currentUserRole === "client") {
-                alert("Accès strictement interdit : Réservé au Fondateur Suprême (Mohamed) et au personnel autorisé.");
-                signOut(auth).then(() => {
-                    window.location.href = 'index.html';
-                });
+                alert("Accès refusé : Ce compte n'a aucun droit administratif sur UNGRIFF.");
+                signOut(auth);
+                return;
             }
+
+            // Si tout est valide, on masque l'overlay de connexion et on affiche le dashboard
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('adminEmailTag').innerText = user.email;
+            document.getElementById('adminRoleTag').innerText = "Rôle : " + currentUserRole.toUpperCase();
+            
+            // Chargement de la synchronisation des données globales
+            initRealtimeSync();
+
         }, { onlyOnce: true });
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        signOut(auth).then(() => {
+            location.reload(); // Force la réinitialisation complète de la page
+        });
+    });
 
-    // SEUL MOHAMED PEUT CRÉER DE NOUVEAUX ADMINS
+    // SEUL TOI (MOHAMED) AS LE DROIT DE CRÉER DES ADMINS
     document.getElementById('btnCreateAdminAccount').addEventListener('click', () => {
         if (currentUserRole !== 'fondateur suprême') {
-            return alert("Action refusée : Seul le Fondateur Suprême (Mohamed) a le pouvoir de nommer de nouveaux administrateurs.");
+            return alert("Action interdite : Seul le Fondateur Suprême (Mohamed) peut générer de nouveaux accès.");
         }
 
         const email = document.getElementById('newAdminEmail').value.trim();
@@ -545,13 +615,13 @@
                 role: role
             }).then(() => {
                 push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Création du compte membre : ${email} avec le rôle [${role}]`, timestamp: Date.now() });
-                alert(`Compte ${role} créé avec succès !`);
+                alert(`Le compte administrateur [${role}] a bien été enregistré !`);
                 document.getElementById('newAdminEmail').value = '';
                 document.getElementById('newAdminPassword').value = '';
             });
         })
         .catch((error) => {
-            alert("Erreur lors de la création : " + error.message);
+            alert("Erreur lors de l'enregistrement : " + error.message);
         });
     });
 
@@ -580,22 +650,25 @@
         document.getElementById('liveClockDate').innerText = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
     }, 1000);
 
-    // ECOUTE DE LA BASE EN TEMPS RÉEL
+    // CHARGEMENT DES COMPOSANTS LOGIQUES APRÈS VALIDATION SECURITY
     let cachedOrders = {};
-    onValue(ref(db), snapshot => {
-        const data = snapshot.val() || {};
-        cachedOrders = data.orders || {};
-        const products = data.products || {};
-        const users = data.users || {};
-        const logs = data.logs || {};
+    function initRealtimeSync() {
+        onValue(ref(db), snapshot => {
+            const data = snapshot.val() || {};
+            cachedOrders = data.orders || {};
+            const products = data.products || {};
+            const users = data.users || {};
+            const logs = data.logs || {};
 
-        processDashboardMetrics(cachedOrders, products, users);
-        buildFinancialChart(cachedOrders);
-        triggerOrdersRender();
-        renderProductsMatrix(products);
-        renderAdminPrivilegesTable(users);
-        renderSecurityLogsTable(logs);
-    });
+            processDashboardMetrics(cachedOrders, products, users);
+            buildFinancialChart(cachedOrders);
+            triggerOrdersRender();
+            renderProductsMatrix(products);
+            renderAdminPrivilegesTable(users);
+            renderSecurityLogsTable(logs);
+            document.getElementById('syncStatus').innerText = "● Connecté en temps réel (Flux sécurisé)";
+        });
+    }
 
     function processDashboardMetrics(orders, products, users) {
         let revenue = 0; let outOfStock = 0;
@@ -678,7 +751,7 @@
         });
     });
 
-    // CRÉATION ET MODIFICATION DE PRODUIT (CRUD)
+    // EDITION PRODUITS (CRUD)
     document.getElementById('btnSaveProduct').addEventListener('click', () => {
         if (currentUserRole === 'support' || currentUserRole === 'moderateur') return alert("Vos accès ne vous permettent pas d'éditer le catalogue.");
         
@@ -747,7 +820,7 @@
         if (confirm("Confirmer la suppression définitive de cet article ?")) remove(ref(db, `products/${id}`));
     };
 
-    // SEUL MOHAMED MODIFIE LES DROITS ET SUPPRIME DES MEMBRES
+    // MATRICE DES ROLES - GESTION EXCLUSIVE PAR MOHAMED
     function renderAdminPrivilegesTable(users) {
         const tbody = document.getElementById('adminUsersTableBody');
         tbody.innerHTML = '';
@@ -779,22 +852,22 @@
     }
 
     window.updateStaffRole = function(uid, chosenRole) {
-        if (currentUserRole !== 'fondateur suprême') return alert("Droit exclusif : Seul le Fondateur Suprême (Mohamed) peut modifier les rôles.");
+        if (currentUserRole !== 'fondateur suprême') return alert("Modification refusée : Seul le Fondateur Suprême (Mohamed) gère les rôles.");
         update(ref(db, `users/${uid}`), { role: chosenRole }).then(() => {
-            push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Changement de rôle pour ${uid} vers [${chosenRole}]`, timestamp: Date.now() });
+            push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Changement de rôle pour UID ${uid} vers [${chosenRole}]`, timestamp: Date.now() });
         });
     };
 
     window.revokeUserAccess = function(uid) {
-        if (currentUserRole !== 'fondateur suprême') return alert("Seul le Fondateur Suprême (Mohamed) peut destituer un membre de l'équipe.");
-        if (confirm("Confirmer la suppression complète des droits admin pour ce compte ?")) {
+        if (currentUserRole !== 'fondateur suprême') return alert("Seul le Fondateur Suprême (Mohamed) peut révoquer un membre.");
+        if (confirm("Confirmer la destitution complète de ce profil ?")) {
             remove(ref(db, `users/${uid}`)).then(() => {
-                push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Permissions et compte d'accès révoqués pour l'identifiant UID : ${uid}`, timestamp: Date.now() });
+                push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Révocation de droits effectuée pour l'UID : ${uid}`, timestamp: Date.now() });
             });
         }
     };
 
-    // SYSTEME DE TRAÇABILITE DES SECURILOGS
+    // LOGS DE SECURITE SYSTEME
     function renderSecurityLogsTable(logs) {
         const fullBody = document.getElementById('fullSecurityLogsBody');
         const dashLogsBox = document.getElementById('dashLogsBox');
