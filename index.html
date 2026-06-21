@@ -62,7 +62,7 @@
             padding: 15px 0; 
         }
 
-        /* Personnalisation fine de la barre de défilement (Scrollbar) à gauche */
+        /* Personnalisation de la barre de défilement (Scrollbar) à gauche */
         .sidebar-menu::-webkit-scrollbar {
             width: 4px;
         }
@@ -484,6 +484,8 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getDatabase(app);
+    
+    // CONFIGURATION FONDATEUR SUPRÊME UNIQUE (MOHAMED)
     const founderEmail = "m6739376@gmail.com";
 
     let globalChartInstance = null;
@@ -491,24 +493,27 @@
     let currentFilterOrders = "Tous";
     let currentUserRole = "client";
 
-    // LOGIQUE DE SESSION SÉCURISÉE (CORRIGÉE POUR ÉVITER LA BOUCLE)
+    // BLOCAGE DE SÉCURITÉ ABSOLU À LA PREMIÈRE ENTRÉE
     onAuthStateChanged(auth, user => {
+        // 1. Si pas connecté du tout -> Éjection immédiate vers la page de connexion
         if (!user) { 
-            if (window.location.pathname.indexOf('index.html') === -1) {
-                window.location.href = 'index.html'; 
-            }
+            window.location.href = 'index.html'; 
             return; 
         }
         
         document.getElementById('adminEmailTag').innerText = user.email;
         
+        // 2. Vérification des droits réels en base de données
         onValue(ref(db, `users/${user.uid}`), snapshot => {
             const u = snapshot.val();
-            currentUserRole = (user.email === founderEmail) ? "fondateur" : (u ? u.role : "client");
+            
+            // Assignation hiérarchique absolue pour Mohamed
+            currentUserRole = (user.email === founderEmail) ? "fondateur suprême" : (u ? u.role : "client");
             document.getElementById('adminRoleTag').innerText = "Rôle : " + currentUserRole.toUpperCase();
 
+            // 3. Si le compte n'a pas de rôle admin valide (ou si c'est un faux compte / client) -> Éjection et déconnexion
             if (currentUserRole === "client") {
-                alert("Accès refusé : Réservé au personnel habilité.");
+                alert("Accès strictement interdit : Réservé au Fondateur Suprême (Mohamed) et au personnel autorisé.");
                 signOut(auth).then(() => {
                     window.location.href = 'index.html';
                 });
@@ -518,10 +523,10 @@
 
     document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
 
-    // CRÉATION DE COMPTE MEMBRE ÉQUIPE
+    // SEUL MOHAMED PEUT CRÉER DE NOUVEAUX ADMINS
     document.getElementById('btnCreateAdminAccount').addEventListener('click', () => {
-        if (currentUserRole !== 'fondateur' && currentUserRole !== 'admin') {
-            return alert("Seul le Fondateur ou un Admin peut créer de nouveaux accès Équipe.");
+        if (currentUserRole !== 'fondateur suprême') {
+            return alert("Action refusée : Seul le Fondateur Suprême (Mohamed) a le pouvoir de nommer de nouveaux administrateurs.");
         }
 
         const email = document.getElementById('newAdminEmail').value.trim();
@@ -738,30 +743,35 @@
     };
 
     window.purgeProductItem = function(id) {
-        if (currentUserRole !== 'fondateur' && currentUserRole !== 'admin') return alert("Action réservée aux administrateurs.");
+        if (currentUserRole !== 'fondateur suprême' && currentUserRole !== 'admin') return alert("Action réservée aux administrateurs.");
         if (confirm("Confirmer la suppression définitive de cet article ?")) remove(ref(db, `products/${id}`));
     };
 
-    // GESTION DES ROLES & RECOVATION D'ACCÈS
+    // SEUL MOHAMED MODIFIE LES DROITS ET SUPPRIME DES MEMBRES
     function renderAdminPrivilegesTable(users) {
         const tbody = document.getElementById('adminUsersTableBody');
         tbody.innerHTML = '';
         Object.keys(users).forEach(uid => {
             const u = users[uid];
+            
+            const isFounder = u.email === founderEmail;
+            const displayRole = isFounder ? "FONDATEUR SUPRÊME" : (u.role || 'client');
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="font-weight:600;">${u.email}</td>
-                <td><span style="text-transform:uppercase; font-size:11px; font-weight:700; color:#ffffff; background:#121214; padding:3px 8px; border-radius:4px;">${u.role || 'client'}</span></td>
+                <td><span style="text-transform:uppercase; font-size:11px; font-weight:700; color:${isFounder ? '#ff453a' : '#ffffff'}; background:#121214; padding:3px 8px; border-radius:4px;">${displayRole}</span></td>
                 <td>
+                    ${isFounder ? '<span style="font-size:12px; color:var(--text-secondary);">Autorité maximale (Mohamed)</span>' : `
                     <select onchange="updateStaffRole('${uid}', this.value)" style="width:160px; margin:0; padding:6px 10px;">
                         <option value="client" ${u.role === 'client' ? 'selected' : ''}>Client</option>
                         <option value="support" ${u.role === 'support' ? 'selected' : ''}>Équipe Support</option>
                         <option value="moderateur" ${u.role === 'moderateur' ? 'selected' : ''}>Modérateur</option>
                         <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Administrateur</option>
-                    </select>
+                    </select>`}
                 </td>
                 <td style="text-align:right;">
-                    <button class="btn-premium btn-danger" onclick="revokeUserAccess('${uid}')" style="padding:4px 10px;">Supprimer / Révoquer</button>
+                    ${isFounder ? '' : `<button class="btn-premium btn-danger" onclick="revokeUserAccess('${uid}')" style="padding:4px 10px;">Supprimer / Révoquer</button>`}
                 </td>
             `;
             tbody.appendChild(tr);
@@ -769,15 +779,15 @@
     }
 
     window.updateStaffRole = function(uid, chosenRole) {
-        if (currentUserRole !== 'fondateur' && currentUserRole !== 'admin') return alert("Droit maître requis pour cette action.");
+        if (currentUserRole !== 'fondateur suprême') return alert("Droit exclusif : Seul le Fondateur Suprême (Mohamed) peut modifier les rôles.");
         update(ref(db, `users/${uid}`), { role: chosenRole }).then(() => {
             push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Changement de rôle pour ${uid} vers [${chosenRole}]`, timestamp: Date.now() });
         });
     };
 
     window.revokeUserAccess = function(uid) {
-        if (currentUserRole !== 'fondateur') return alert("Seul le fondateur de la boutique peut retirer les droits ou supprimer un administrateur.");
-        if (confirm("Confirmer la suppression complète des droits admin pour ce compte ? Sa synchronisation avec la boutique passera en mode client classique.")) {
+        if (currentUserRole !== 'fondateur suprême') return alert("Seul le Fondateur Suprême (Mohamed) peut destituer un membre de l'équipe.");
+        if (confirm("Confirmer la suppression complète des droits admin pour ce compte ?")) {
             remove(ref(db, `users/${uid}`)).then(() => {
                 push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Permissions et compte d'accès révoqués pour l'identifiant UID : ${uid}`, timestamp: Date.now() });
             });
