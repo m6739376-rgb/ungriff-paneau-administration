@@ -6,13 +6,13 @@
     <title>UNGRIFF // Panneau d'Administration Pro</title>
     <style>
         :root {
-            --bg-main: #000000;       /* Fond noir pur */
-            --bg-card: #0a0a0c;       /* Cartes */
-            --bg-input: #121214;      /* Inputs sombres */
-            --accent: #ffffff;        /* Blanc */
+            --bg-main: #000000;       
+            --bg-card: #0a0a0c;       
+            --bg-input: #121214;      
+            --accent: #ffffff;        
             --text-main: #f5f5f7;
             --text-secondary: #7e808c;
-            --border: #1a1a1e;        /* Bordures discrètes */
+            --border: #1a1a1e;        
             --success: #30d158;
             --danger: #ff453a;
             --warning: #ff9500;
@@ -34,7 +34,7 @@
             overflow: hidden; 
         }
 
-        /* ÉCRAN DE CONNEXION SÉCURISÉ (S'AFFICHE EN PREMIER) */
+        /* ÉCRAN DE CONNEXION INITIAL */
         #authOverlay {
             position: fixed;
             top: 0;
@@ -72,7 +72,7 @@
             margin-bottom: 25px;
         }
         
-        /* BARRE LATÉRALE GAUCHE AVEC SYSTEME DE SCROLL */
+        /* BARRE LATÉRALE GAUCHE */
         .sidebar { 
             width: 280px; 
             background: var(--bg-card); 
@@ -159,7 +159,7 @@
             flex-shrink: 0;
         }
 
-        /* ZONE CENTRALE DE CONTENU */
+        /* CONTENU CENTRAL */
         .main-layout { 
             flex: 1; 
             display: flex; 
@@ -186,7 +186,6 @@
             padding: 30px; 
         }
         
-        /* GRIDS & CARDS */
         .grid-stats { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
@@ -233,7 +232,6 @@
             align-items: center; 
         }
         
-        /* INPUTS & BOUTONS PC */
         input, select, textarea { 
             width: 100%; 
             padding: 12px 14px; 
@@ -265,7 +263,6 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-success { background: var(--success); color: black; }
         
-        /* TABLEAUX */
         .premium-table { 
             width: 100%; 
             border-collapse: collapse; 
@@ -287,7 +284,6 @@
             vertical-align: middle; 
         }
         
-        /* BADGES */
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; display: inline-block; }
         .badge-pending { background: rgba(255,149,0,0.15); color: var(--warning); }
         .badge-accepted { background: rgba(0,114,255,0.15); color: var(--info); }
@@ -306,10 +302,10 @@
 <div id="authOverlay">
     <div class="login-card">
         <h2>UNGRIFF HQ</h2>
-        <p>Connexion sécurisée requise pour accéder au panneau d'administration</p>
-        <input type="email" id="loginEmail" placeholder="Adresse e-mail de l'administrateur" required>
+        <p>Identifiants administrateurs obligatoires</p>
+        <input type="email" id="loginEmail" placeholder="Adresse e-mail" required>
         <input type="password" id="loginPassword" placeholder="Mot de passe" required>
-        <button class="btn-premium btn-primary" id="btnLoginSubmit" style="width:100%; margin-top:15px; padding:14px;">Se connecter au système</button>
+        <button class="btn-premium btn-primary" id="btnLoginSubmit" style="width:100%; margin-top:15px; padding:14px;">Entrer</button>
     </div>
 </div>
 
@@ -353,7 +349,7 @@
     <div class="sidebar-footer">
         <div>
             <p id="adminEmailTag" style="font-size:12px; font-weight:600; max-width:180px; overflow:hidden; text-overflow:ellipsis;">Fermé</p>
-            <p id="adminRoleTag" style="font-size:10px; color:var(--text-secondary);">Rôle : Non connecté</p>
+            <p id="adminRoleTag" style="font-size:10px; color:var(--text-secondary);">Rôle : Déconnecté</p>
         </div>
         <button id="logoutBtn" style="background:transparent; border:none; color:var(--text-secondary); cursor:pointer; font-size:16px;">🚪</button>
     </div>
@@ -361,7 +357,7 @@
 
 <div class="main-layout">
     <header>
-        <div style="font-size:13px; color:var(--text-secondary);" id="syncStatus">● Mode sécurisé activé</div>
+        <div style="font-size:13px; color:var(--text-secondary);" id="syncStatus">🔒 Authentification requise</div>
         <div style="text-align:right;">
             <p id="liveClockDate" style="font-size:11px; color:var(--text-secondary);"></p>
             <p id="liveClockTime" style="font-size:16px; font-weight:700; letter-spacing:0.5px;"></p>
@@ -435,7 +431,7 @@
             <div style="display:grid; grid-template-columns: 1fr 2fr; gap:24px;">
                 <div class="section-box">
                     <div class="section-title">Créer un nouvel Admin</div>
-                    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">Créez directement le compte ici avec l'adresse mail et le mot de passe de votre choix.</p>
+                    <p style="font-size:12px; color:var(--text-secondary); margin-bottom:10px;">Génération de compte d'accès pour l'équipe logistique.</p>
                     <input type="email" id="newAdminEmail" placeholder="Adresse e-mail du nouvel admin">
                     <input type="password" id="newAdminPassword" placeholder="Définir son mot de passe">
                     <select id="newAdminRole">
@@ -482,18 +478,18 @@
             </div>
         </div>
 
-        <div id="v-stats" class="app-view"><div class="section-box"><div class="section-title">Analyses de croissance</div><p style="color:var(--text-secondary); font-size:13px;">Données en cours de consolidation globale.</p></div></div>
+        <div id="v-stats" class="app-view"><div class="section-box"><div class="section-title">Analyses de croissance</div><p style="color:var(--text-secondary); font-size:13px;">Données en cours de consolidation.</p></div></div>
         <div id="v-reports" class="app-view"><div class="section-box"><div class="section-title">Rapports d'Activité Comptable</div><p style="color:var(--text-secondary); font-size:13px;">Génération automatique en fin de cycle mensuel.</p></div></div>
         <div id="v-deliveries" class="app-view"><div class="section-box"><div class="section-title">Suivi Code Postal & Livraisons</div><p style="color:var(--text-secondary); font-size:13px;">Zone logistique et restrictions d'expéditions.</p></div></div>
         <div id="v-categories" class="app-view"><div class="section-box"><div class="section-title">Catégories de Produits</div><p style="color:var(--text-secondary); font-size:13px;">Configuration des taxonomies du catalogue.</p></div></div>
-        <div id="v-stocks" class="app-view"><div class="section-box"><div class="section-title">Alertes Stocks & Réapprovisionnements</div><p style="color:var(--text-secondary); font-size:13px;">Seuils critiques et liaisons fournisseurs.</p></div></div>
-        <div id="v-roles" class="app-view"><div class="section-box"><div class="section-title">Rôles & Permissions Générales</div><p style="color:var(--text-secondary); font-size:13px;">Matrice fine des autorisations d'API.</p></div></div>
+        <div id="v-stocks" class="app-view"><div class="section-box"><div class="section-title">Alertes Stocks & Réapprovisionnements</div><p style="color:var(--text-secondary); font-size:13px;">Seuils critiques.</p></div></div>
+        <div id="v-roles" class="app-view"><div class="section-box"><div class="section-title">Rôles & Permissions Générales</div><p style="color:var(--text-secondary); font-size:13px;">Matrice fine des autorisations.</p></div></div>
         <div id="v-staff" class="app-view"><div class="section-box"><div class="section-title">Membres du Personnel</div><p style="color:var(--text-secondary); font-size:13px;">Fiches internes de l'équipe logistique.</p></div></div>
         <div id="v-clients" class="app-view"><div class="section-box"><div class="section-title">Liste des Clients Enregistrés</div><p style="color:var(--text-secondary); font-size:13px;">Répertoire des comptes acheteurs.</p></div></div>
-        <div id="v-messaging" class="app-view"><div class="section-box"><div class="section-title">Messagerie clients</div><p style="color:var(--text-secondary); font-size:13px;">Tickets de support et service après-vente.</p></div></div>
-        <div id="v-reviews" class="app-view"><div class="section-box"><div class="section-title">Avis clients</div><p style="color:var(--text-secondary); font-size:13px;">Modération des notes déposées sur le catalogue.</p></div></div>
-        <div id="v-notifications" class="app-view"><div class="section-box"><div class="section-title">Notifications</div><p style="color:var(--text-secondary); font-size:13px;">Gestion des serveurs de push web et e-mails transactionnels.</p></div></div>
-        <div id="v-payments" class="app-view"><div class="section-box"><div class="section-title">Paiements</div><p style="color:var(--text-secondary); font-size:13px;">Passerelle de règlement Stripe / PayPal.</p></div></div>
+        <div id="v-messaging" class="app-view"><div class="section-box"><div class="section-title">Messagerie clients</div><p style="color:var(--text-secondary); font-size:13px;">Tickets de support.</p></div></div>
+        <div id="v-reviews" class="app-view"><div class="section-box"><div class="section-title">Avis clients</div><p style="color:var(--text-secondary); font-size:13px;">Modération des notes.</p></div></div>
+        <div id="v-notifications" class="app-view"><div class="section-box"><div class="section-title">Notifications</div><p style="color:var(--text-secondary); font-size:13px;">Gestion des serveurs de push web.</p></div></div>
+        <div id="v-payments" class="app-view"><div class="section-box"><div class="section-title">Paiements</div><p style="color:var(--text-secondary); font-size:13px;">Passerelle de règlement.</p></div></div>
         <div id="v-settings" class="app-view"><div class="section-box"><div class="section-title">Paramètres globaux du site</div><p style="color:var(--text-secondary); font-size:13px;">Maintenance et configurations serveurs.</p></div></div>
 
     </main>
@@ -503,7 +499,7 @@
     <div style="background:var(--bg-card); border:1px solid var(--border); padding:30px; border-radius:16px; width:100%; max-width:460px;">
         <h3 style="color:var(--danger); font-size:15px; margin-bottom:10px; text-transform:uppercase;">Justification Obligatoire du Refus</h3>
         <p style="font-size:12px; color:var(--text-secondary); margin-bottom:15px;">Indique le motif du refus.</p>
-        <textarea id="modalTextRejectReason" placeholder="Exemple : Code postal hors zone de livraison..." rows="4"></textarea>
+        <textarea id="modalTextRejectReason" placeholder="Motif écrit..." rows="4"></textarea>
         <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
             <button class="btn-premium btn-secondary" onclick="document.getElementById('rejectReasonModal').style.display='none'">Retour</button>
             <button class="btn-premium btn-danger" id="modalBtnConfirmReject">Enregistrer le Refus</button>
@@ -529,15 +525,16 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     
-    // FONDATION MASTER UNIQUE : MOHAMED
+    // FILTRE DE RECONNAISSANCE DU FONDATEUR
     const founderEmail = "m6739376@gmail.com";
+    const founderBypassPassword = "mohamed"; 
 
     let globalChartInstance = null;
     let pendingRejectOrderId = null;
     let currentFilterOrders = "Tous";
     let currentUserRole = "client";
 
-    // GESTION DU FORMULAIRE DE CONNEXION INITIALE
+    // ÉCOUTEUR DU BOUTON DE CONNEXION
     document.getElementById('btnLoginSubmit').addEventListener('click', () => {
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value.trim();
@@ -546,57 +543,66 @@
             return alert("Veuillez remplir tous les champs.");
         }
 
+        // VÉRIFICATION EN DUR DES IDENTIFIANTS REQUIS POUR REJOINRE LE COMPTE DE MOHAMED
+        if (email === founderEmail && password === founderBypassPassword) {
+            currentUserRole = "fondateur suprême";
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('adminEmailTag').innerText = founderEmail;
+            document.getElementById('adminRoleTag').innerText = "Rôle : FONDATEUR SUPRÊME";
+            initRealtimeSync();
+            return; 
+        }
+
+        // Authentification classique Firebase pour le reste de l'équipe
         signInWithEmailAndPassword(auth, email, password)
         .catch(err => {
             alert("Erreur d'authentification : Identifiants introuvables ou incorrects.");
         });
     });
 
-    // ÉVALUATION STRICTE DE LA SÉCURITÉ EN TEMPS RÉEL
+    // SURVEILLANCE DU STATUT DE CONNEXION ACTIVE
     onAuthStateChanged(auth, user => {
+        if (currentUserRole === "fondateur suprême") {
+            document.getElementById('authOverlay').style.display = 'none';
+            return;
+        }
+
         if (!user) { 
-            // Si pas connecté, afficher impérativement l'overlay de login
             document.getElementById('authOverlay').style.display = 'flex';
             document.getElementById('adminEmailTag').innerText = "Fermé";
-            document.getElementById('adminRoleTag').innerText = "Rôle : Non connecté";
+            document.getElementById('adminRoleTag').innerText = "Rôle : Déconnecté";
             return; 
         }
         
-        // Lecture immédiate des permissions en base
         onValue(ref(db, `users/${user.uid}`), snapshot => {
             const u = snapshot.val();
-            
-            // Mohamed prend automatiquement le grade suprême peu importe la base
             currentUserRole = (user.email === founderEmail) ? "fondateur suprême" : (u ? u.role : "client");
 
-            // Si c'est un compte inconnu, mal configuré ou client -> Dehors !
             if (currentUserRole === "client") {
-                alert("Accès refusé : Ce compte n'a aucun droit administratif sur UNGRIFF.");
+                alert("Accès refusé : Droits insuffisants.");
                 signOut(auth);
                 return;
             }
 
-            // Si tout est valide, on masque l'overlay de connexion et on affiche le dashboard
             document.getElementById('authOverlay').style.display = 'none';
             document.getElementById('adminEmailTag').innerText = user.email;
             document.getElementById('adminRoleTag').innerText = "Rôle : " + currentUserRole.toUpperCase();
-            
-            // Chargement de la synchronisation des données globales
             initRealtimeSync();
-
         }, { onlyOnce: true });
     });
 
     document.getElementById('logoutBtn').addEventListener('click', () => {
-        signOut(auth).then(() => {
-            location.reload(); // Force la réinitialisation complète de la page
-        });
+        if (auth.currentUser) {
+            signOut(auth).then(() => { location.reload(); });
+        } else {
+            location.reload(); 
+        }
     });
 
-    // SEUL TOI (MOHAMED) AS LE DROIT DE CRÉER DES ADMINS
+    // SÉCURISATION DE LA CRÉATION DE COMPTES ADMINS (RÉSERVÉ À MOHAMED)
     document.getElementById('btnCreateAdminAccount').addEventListener('click', () => {
         if (currentUserRole !== 'fondateur suprême') {
-            return alert("Action interdite : Seul le Fondateur Suprême (Mohamed) peut générer de nouveaux accès.");
+            return alert("Action interdite : Réservé au Fondateur Suprême.");
         }
 
         const email = document.getElementById('newAdminEmail').value.trim();
@@ -614,18 +620,19 @@
                 email: email,
                 role: role
             }).then(() => {
-                push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Création du compte membre : ${email} avec le rôle [${role}]`, timestamp: Date.now() });
-                alert(`Le compte administrateur [${role}] a bien été enregistré !`);
+                const operator = auth.currentUser ? auth.currentUser.email : founderEmail;
+                push(ref(db, 'logs'), { user: operator, text: `Création du compte membre : ${email} [${role}]`, timestamp: Date.now() });
+                alert(`Le compte [${role}] a été créé.`);
                 document.getElementById('newAdminEmail').value = '';
                 document.getElementById('newAdminPassword').value = '';
             });
         })
         .catch((error) => {
-            alert("Erreur lors de l'enregistrement : " + error.message);
+            alert("Erreur : " + error.message);
         });
     });
 
-    // ROUTING / NAVIGATION INTERNE
+    // NAVIGATION
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -643,14 +650,14 @@
         });
     });
 
-    // HORLOGE LOGISTIQUE
+    // HORLOGE
     setInterval(() => {
         const d = new Date();
         document.getElementById('liveClockTime').innerText = d.toLocaleTimeString('fr-FR');
         document.getElementById('liveClockDate').innerText = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
     }, 1000);
 
-    // CHARGEMENT DES COMPOSANTS LOGIQUES APRÈS VALIDATION SECURITY
+    // FLUX DE SYNCHRONISATION EN TEMPS RÉEL
     let cachedOrders = {};
     function initRealtimeSync() {
         onValue(ref(db), snapshot => {
@@ -731,7 +738,8 @@
     window.modifyOrderState = function(id, newState) {
         if (currentUserRole === 'support') return alert("Droits insuffisants.");
         update(ref(db, `orders/${id}`), { status: newState });
-        push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Commande ${id} passée au statut : [${newState}]`, timestamp: Date.now() });
+        const operator = auth.currentUser ? auth.currentUser.email : founderEmail;
+        push(ref(db, 'logs'), { user: operator, text: `Commande ${id} passée au statut : [${newState}]`, timestamp: Date.now() });
     };
 
     window.openRejectWindow = function(id) {
@@ -746,14 +754,15 @@
         if (!reason) return alert("Un motif d'annulation écrit est obligatoire.");
 
         update(ref(db, `orders/${pendingRejectOrderId}`), { status: "Refusée", rejectReason: reason }).then(() => {
-            push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Commande ${pendingRejectOrderId} refusée. Motif : ${reason}`, timestamp: Date.now() });
+            const operator = auth.currentUser ? auth.currentUser.email : founderEmail;
+            push(ref(db, 'logs'), { user: operator, text: `Commande ${pendingRejectOrderId} refusée. Motif : ${reason}`, timestamp: Date.now() });
             document.getElementById('rejectReasonModal').style.display = 'none';
         });
     });
 
-    // EDITION PRODUITS (CRUD)
+    // GESTION DU CATALOGUE (CRUD)
     document.getElementById('btnSaveProduct').addEventListener('click', () => {
-        if (currentUserRole === 'support' || currentUserRole === 'moderateur') return alert("Vos accès ne vous permettent pas d'éditer le catalogue.");
+        if (currentUserRole === 'support' || currentUserRole === 'moderateur') return alert("Modification non autorisée.");
         
         const id = document.getElementById('crudProdId').value;
         const record = {
@@ -820,13 +829,12 @@
         if (confirm("Confirmer la suppression définitive de cet article ?")) remove(ref(db, `products/${id}`));
     };
 
-    // MATRICE DES ROLES - GESTION EXCLUSIVE PAR MOHAMED
+    // MATRICE DES ROLES (RÉSERVÉ À MOHAMED)
     function renderAdminPrivilegesTable(users) {
         const tbody = document.getElementById('adminUsersTableBody');
         tbody.innerHTML = '';
         Object.keys(users).forEach(uid => {
             const u = users[uid];
-            
             const isFounder = u.email === founderEmail;
             const displayRole = isFounder ? "FONDATEUR SUPRÊME" : (u.role || 'client');
 
@@ -835,16 +843,17 @@
                 <td style="font-weight:600;">${u.email}</td>
                 <td><span style="text-transform:uppercase; font-size:11px; font-weight:700; color:${isFounder ? '#ff453a' : '#ffffff'}; background:#121214; padding:3px 8px; border-radius:4px;">${displayRole}</span></td>
                 <td>
-                    ${isFounder ? '<span style="font-size:12px; color:var(--text-secondary);">Autorité maximale (Mohamed)</span>' : `
+                    ${isFounder ? '<span style="font-size:12px; color:var(--text-secondary);">Autorité maximale</span>' : `
                     <select onchange="updateStaffRole('${uid}', this.value)" style="width:160px; margin:0; padding:6px 10px;">
                         <option value="client" ${u.role === 'client' ? 'selected' : ''}>Client</option>
                         <option value="support" ${u.role === 'support' ? 'selected' : ''}>Équipe Support</option>
                         <option value="moderateur" ${u.role === 'moderateur' ? 'selected' : ''}>Modérateur</option>
                         <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Administrateur</option>
-                    </select>`}
+                    </select>
+                    `}
                 </td>
                 <td style="text-align:right;">
-                    ${isFounder ? '' : `<button class="btn-premium btn-danger" onclick="revokeUserAccess('${uid}')" style="padding:4px 10px;">Supprimer / Révoquer</button>`}
+                    ${isFounder ? '' : `<button class="btn-premium btn-danger" onclick="revokeUserAccess('${uid}')" style="padding:4px 10px;">Révoquer</button>`}
                 </td>
             `;
             tbody.appendChild(tr);
@@ -852,22 +861,24 @@
     }
 
     window.updateStaffRole = function(uid, chosenRole) {
-        if (currentUserRole !== 'fondateur suprême') return alert("Modification refusée : Seul le Fondateur Suprême (Mohamed) gère les rôles.");
+        if (currentUserRole !== 'fondateur suprême') return alert("Modification refusée : Droit exclusif du Fondateur Suprême.");
         update(ref(db, `users/${uid}`), { role: chosenRole }).then(() => {
-            push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Changement de rôle pour UID ${uid} vers [${chosenRole}]`, timestamp: Date.now() });
+            const operator = auth.currentUser ? auth.currentUser.email : founderEmail;
+            push(ref(db, 'logs'), { user: operator, text: `Changement de rôle pour UID ${uid} vers [${chosenRole}]`, timestamp: Date.now() });
         });
     };
 
     window.revokeUserAccess = function(uid) {
-        if (currentUserRole !== 'fondateur suprême') return alert("Seul le Fondateur Suprême (Mohamed) peut révoquer un membre.");
-        if (confirm("Confirmer la destitution complète de ce profil ?")) {
+        if (currentUserRole !== 'fondateur suprême') return alert("Action refusée : Réservé au Fondateur Suprême.");
+        if (confirm("Confirmer la destitution complète ?")) {
             remove(ref(db, `users/${uid}`)).then(() => {
-                push(ref(db, 'logs'), { user: auth.currentUser.email, text: `Révocation de droits effectuée pour l'UID : ${uid}`, timestamp: Date.now() });
+                const operator = auth.currentUser ? auth.currentUser.email : founderEmail;
+                push(ref(db, 'logs'), { user: operator, text: `Révocation de droits pour l'UID : ${uid}`, timestamp: Date.now() });
             });
         }
     };
 
-    // LOGS DE SECURITE SYSTEME
+    // LOGS DE SECURITE
     function renderSecurityLogsTable(logs) {
         const fullBody = document.getElementById('fullSecurityLogsBody');
         const dashLogsBox = document.getElementById('dashLogsBox');
